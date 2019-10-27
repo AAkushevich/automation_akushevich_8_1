@@ -1,0 +1,25 @@
+{
+  "name": "automation_akushevich_8_1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "spec/test.js",
+  "scripts": {
+    "test": "jasmine spec/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WEncelad/automation_akushevich_8_1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WEncelad/automation_akushevich_8_1/issues"
+  },
+  "homepage": "https://github.com/WEncelad/automation_akushevich_8_1#readme",
+  "dependencies": {
+    "chromedriver": "^77.0.0",
+    "geckodriver": "^1.19.0",
+    "jasmine": "^3.5.0",
+    "selenium-webdriver": "^4.0.0-alpha.5"
+  }
+}
