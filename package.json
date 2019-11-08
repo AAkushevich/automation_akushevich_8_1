@@ -18,7 +18,7 @@
   "homepage": "https://github.com/WEncelad/automation_akushevich_8_1#readme",
   "dependencies": {
     "chromedriver": "^77.0.0",
-    "geckodriver": "^1.19.0",
+    "geckodriver": "^1.19.1",
     "jasmine": "^3.5.0",
     "selenium-webdriver": "^4.0.0-alpha.5"
   }
