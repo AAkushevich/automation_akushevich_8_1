@@ -26,7 +26,6 @@ beforeAll(function (done) {
           });
       });
   });
-  dateStarted = new Date();
 }, 20000);
 
   async function getResultsBodies() {
