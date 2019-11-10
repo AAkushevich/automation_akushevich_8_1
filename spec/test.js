@@ -1,133 +1,113 @@
+const googleSearchPage = require('./GoogleSearchPage.js');
+const googleResultPage = require('./GoogleResPage.js');
+const defaultValues = require('./testData');
 require('geckodriver');
 require('chromedriver');
 const { Builder, By, Key, until } = require('selenium-webdriver');
-let defaultBrowser = "firefox";
 let numSearchRes, searchTime, numOfSearchResToCmpare = 0;
 
 if (process.argv.length > 3) {
   if(process.argv[3] != "undefined") {
-    defaultBrowser = process.argv[3];
+    defaultValues.browser = process.argv[3];
   }
   if(process.argv[4] != "undefined") {
-    numOfSearchResToCmpare = process.argv[3];
+    numOfSearchResToCmpare = process.argv[4];
   }
 }
-let driver = new Builder().forBrowser(defaultBrowser).build();
 
-beforeAll(function (done) {
-  driver.get('https://google.com').then(() => {
-      driver.findElement(By.name('q')).then(tag => {
-          tag.sendKeys("iTechArt").then(() => {
-              tag.sendKeys(Key.ENTER).then(() => {
-                driver.wait(until.elementsLocated(By.xpath('//span[@class="st"]'))).then(() => {
-                  done();
-                });
-              });
-          });
-      });
-  });
-  dateStarted = new Date();
+let driver = new Builder().forBrowser(defaultValues.browser).build();
+
+beforeAll(async function () {
+  await googleSearchPage.initDriver(driver);
+  await googleSearchPage.openPage(defaultValues.googleLink);
+  await googleSearchPage.startSearch(defaultValues.searchString);
+  await googleSearchPage.waitUntilPageLoaded();
+  driver = await googleSearchPage.getDriver();
 }, 20000);
 
-  async function getResultsBodies() {
-    return await driver.findElements(By.xpath('//span[@class="st"]'));
-  }
-  async function getResultsHeaders() {
-    return await driver.findElements(By.className('LC20lb'));
-  }
-  async function getResultsUrls() {
-    return await driver.findElements(By.xpath('//cite'));
-  }
 
 describe('Search test', function () {
 
-  it('First page, find in body', function (done) {
-    getResultsBodies().then((bodies) => {
-      for(let body of bodies) {
-        body.getText().then((bodyText) => {
-          expect(bodyText.toString().toLowerCase().includes("itechart")).toBe(true);  
-        });
-      }
-      done();
-    })
-  }, 10000);
+  it('First page, find in body',async function (done) {
+     googleResultPage.initDriver(driver).then(async () => {
+      let bodies = await googleResultPage.getResultsBodies();
+
+        for(let body of bodies) {
+          body.getText().then((bodyText) => {
+            expect(bodyText.toString().toLowerCase().includes(defaultValues.searchString)).toBe(true);  
+          });
+        }
+        done();
+     });
+  }, 20000);
 
   it('First page, find in header', function (done) {
-    getResultsHeaders().then((headers) => {
+    googleResultPage.getResultsHeaders().then((headers) => {
       for(let header of headers) {
         header.getText().then((headerText) => {
-          expect(headerText.toString().toLowerCase().includes("itechart")).toBe(true);  
+          expect(headerText.toString().toLowerCase().includes(defaultValues.searchString)).toBe(true);  
         });
       }
       done();
-    })
+    });
   }, 10000);
 
   it('First page, find in url', function (done) {
-    getResultsUrls().then((urls) => {
+    googleResultPage.getResultsUrls().then((urls) => {
       for(let url of urls) {
         url.getText().then((urlText) => {
-          expect(urlText.toLowerCase().includes("itechart")).toBe(true);  
+          expect(urlText.toString().toLowerCase().includes(defaultValues.searchString)).toBe(true);  
         });
       }
       done();
-    })
+    });
   }, 10000);
 
-  it('Second page, find in body', function (done) {
-    driver.wait(until.elementsLocated(By.xpath('//a[@aria-label="Page 2"]'))).then(() => {
-        driver.findElement(By.xpath('//a[@aria-label="Page 2"]')).sendKeys(Key.ENTER).then(() => {
-          driver.wait(async function(){
-            let pageLoadState = await driver.executeScript("return document.readyState");
-            if(pageLoadState === "complete") {
-              return true;
+    it('Second page, find in body', async function (done) {
+
+          await googleResultPage.nextPage();
+          googleResultPage.getResultsBodies().then((bodies) => {
+            for(let body of bodies) {
+              body.getText().then((bodyText) => {
+                expect(bodyText.toString().toLowerCase().includes(defaultValues.searchString)).toBe(true);  
+              });
             }
-          }).then(() => {
-            getResultsBodies().then((bodies) => {
-              for(let body of bodies) {
-                body.getText().then((bodyText) => {
-                  expect(bodyText.toString().toLowerCase().includes("itechart")).toBe(true);  
-                });
-              }
-              done();
-            })    
-            });  
+            done();    
           });
-        });
-    }, 10000);
+      }, 10000);
+    
 
     it('Second page, find in header', function (done) {
-      getResultsHeaders().then((headers) => {
+      googleResultPage.getResultsHeaders().then((headers) => {
         for(let header of headers) {
           header.getText().then((headerText) => {
-            expect(headerText.toString().toLowerCase().includes("itechart")).toBe(true);  
+            expect(headerText.toString().toLowerCase().includes(defaultValues.searchString)).toBe(true);  
           });
         }
         done();
-      })       
+      });
     }, 10000);
 
     it('Second page, find in url', function (done) {
-      getResultsUrls().then((urls) => {
+      googleResultPage.getResultsUrls().then((urls) => {
         for(let url of urls) {
           url.getText().then((urlText) => {
-            expect(urlText.toLowerCase().includes("itechart")).toBe(true);  
+            expect(urlText.toString().toLowerCase().includes(defaultValues.searchString)).toBe(true);  
           });
         }
         done();
-      })
+      });
     }, 10000);
 
     it("Is num of results is grearer than N", async function() {
-      let resultStats = await driver.findElement(By.xpath('//*[@id="resultStats"]'));
-      let resultText = await resultStats.getText();
-      numSearchRes = await resultText.slice(0, resultText.indexOf(','));
-      searchTime = await resultText.slice(resultText.indexOf('(') + 1, resultText.indexOf(')'));
-      expect(numSearchRes > numOfSearchResToCmpare);
+      numSearchRes = await googleResultPage.getNumOfResults();
+      searchTime = await googleResultPage.getTimeOfSearching();
+      expect(+numSearchRes.replace(/\D+/g, "")).toBeGreaterThan(+numOfSearchResToCmpare);
     }, 10000);
   
-  });
+  
 
+});
 
 afterAll(async function() {
   console.log();
@@ -135,3 +115,4 @@ afterAll(async function() {
   console.log(`Search time: ${searchTime}`);
   await driver.quit();
 }, 15000);
+
