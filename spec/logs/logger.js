@@ -1,7 +1,7 @@
 const log = require('log4js');
 const fs = require('fs-extra');
 
-if (!fs.exists("./logs")){
+if (!fs.exists("./logs")) {
     fs.mkdir("./logs");
 }
 
