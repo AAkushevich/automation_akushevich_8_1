@@ -1,29 +1,26 @@
 {
-  "name": "async",
+  "name": "automation_akushevich_8_1",
   "version": "1.0.0",
   "description": "",
-  "main": "async.js",
+  "main": "spec/main.js",
   "scripts": {
-    "test": "jasmine /test/main.js"
+    "test": "jasmine spec/main.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/WEncelad/automation_akushevich_8_1.git"
   },
-  "author": "i",
+  "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/WEncelad/automation_akushevich_8_1/issues"
   },
   "homepage": "https://github.com/WEncelad/automation_akushevich_8_1#readme",
   "dependencies": {
-    "chromedriver": "^79.0.0",
-    "fs": "0.0.1-security",
+    "chromedriver": "^77.0.0",
+    "downloads-folder": "^1.0.2",
+    "geckodriver": "^1.19.1",
     "jasmine": "^3.5.0",
-    "open": "^7.0.0",
-    "opn": "^6.0.0",
-    "path": "^0.12.7",
-    "selenium-webdriver": "^4.0.0-alpha.5",
-    "webdriver": "^5.18.0"
+    "selenium-webdriver": "^4.0.0-alpha.5"
   }
 }
