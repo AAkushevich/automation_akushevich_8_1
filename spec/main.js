@@ -7,11 +7,12 @@ const gamePage = require('./test/GamePage');
 const GamesPage = require('./test/ListGamesPage');
 const downloadPage = require('./test/DownloadSteamPage');
 const config = require('./test/testData');
+
 jasmine.DEFAULT_TIMEOUT_INTERVAL = config.DEFAULT_TIMEOUT;
 
 let chromeCapabilities = webdriver.Capabilities.chrome();
 let chromeOptions = {
-    'prefs': {"download.default_directory":config.download_path}
+    'prefs': {"download.default_directory":config.downloadPath}
 };
 chromeCapabilities.set('chromeOptions', chromeOptions);
 let driver = new Builder()
@@ -27,20 +28,22 @@ describe("Steam test", function() {
         await mainSteamPage.open(config.SteamURL);
     });
 
-    afterAll(async function(){
+    afterAll(async function() {
         await driver.quit();
     });
 
     it('Genre exists', async () => {
-        await expect(await mainSteamPage.goMenuItem(config.game_genre)).toBeTrue();
+        await expect(await mainSteamPage.goMenuItem(config.gameGenre)).toBeTrue();
         driver = await mainSteamPage.getDriver();
     });
 
-    it("Check Discount or Price", async ()=>{
+    it("Check Discount or Price", async () => {
+
         await GamesPage.setDriver(driver);
         await GamesPage.goNewReleases();
         let maxDiscount = await GamesPage.findMaxDiscount();
-        if(maxDiscount === null){
+
+        if(maxDiscount === null) {
             let maxPrice = await GamesPage.findMaxPrice();
             textPrice = await maxPrice.getText();
             await maxPrice.click();
@@ -50,10 +53,12 @@ describe("Steam test", function() {
             textFinalPrice = await GamesPage.getPrice();
             await maxDiscount.click();
         }
+
         driver = await GamesPage.getDriver();
         await gamePage.setDriver(driver);
-        await gamePage.EnterAgeGate(config.birth_year);
+        await gamePage.EnterAgeGate(config.birthYear);
         gamePage.setDriver(driver);
+
         if(maxDiscount === null){
             price = await gamePage.getPrice();
             expect(price).toContain(textPrice);
@@ -66,7 +71,7 @@ describe("Steam test", function() {
         }
     });
 
-    it("Download Steam",async ()=>{
+    it("Download Steam",async () => {
         mainSteamPage.setDriver(driver);
         await mainSteamPage.goSteamInstall();
         driver = await mainSteamPage.getDriver();

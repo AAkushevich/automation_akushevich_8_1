@@ -16,7 +16,8 @@ class SteamMenuPage extends Page {
         super.open(path, driver);
     }
 
-    async goMenuItem(genreName){
+    async goMenuItem(genreName) {
+        
         const genresDivId = 'genre_flyout';
 
         await driver.wait(until.elementLocated(By.id(genresDivId)));

@@ -34,7 +34,7 @@ class GamePage extends Page{
     }
 
 
-    async EnterAgeGate(year){
+    async EnterAgeGate(year) {
         await driver.wait(until.elementLocated(By.className('game_page_background')));
 
         let agegateExists = true;

@@ -20,7 +20,7 @@ class ListGamesPage extends Page {
         ).click();
     }
 
-    async findMaxDiscount(){
+    async findMaxDiscount() {
         let min = 0;
         let minDiscount;
         let discounts = await driver.wait (
@@ -46,7 +46,9 @@ class ListGamesPage extends Page {
     }
 
     getPrice(){
-        return driver.findElement(By.xpath(`(//div[@id="tab_content_NewReleases"]//div[@class='discount_pct']/..//div[@class='discount_final_price'])[${index}]`)).getText();
+        return driver.findElement(By.xpath(
+            `(//div[@id="tab_content_NewReleases"]//div[@class='discount_pct']/..//div[@class='discount_final_price'])[${index}]`))
+            .getText();
     }
 
     async findMaxPrice(){
@@ -60,7 +62,7 @@ class ListGamesPage extends Page {
         {
             let text = await price.getText();
             text = text.slice(1);
-            if(max < +text){
+            if(max < +text) {
                 max = +text;
                 maxPrice = price;
             }
