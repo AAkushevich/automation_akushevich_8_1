@@ -1,10 +1,10 @@
 {
   "name": "automation_akushevich_8_1",
   "version": "1.0.0",
-  "description": "",
-  "main": "spec/test.js",
+  "description": "To run: npm test",
+  "main": "index.js",
   "scripts": {
-    "test": "jasmine spec/test.js"
+    "test": "./node_modules/.bin/wdio run wdio.conf.js"
   },
   "repository": {
     "type": "git",
@@ -17,15 +17,18 @@
   },
   "homepage": "https://github.com/WEncelad/automation_akushevich_8_1#readme",
   "dependencies": {
-    "allure": "0.0.0",
-    "chromedriver": "^77.0.0",
-    "gaxios": "^2.1.0",
-    "geckodriver": "^1.19.1",
-    "google-auth-library": "^5.5.1",
-    "googleapis": "^39.2.0",
+    "@wdio/cli": "^5.18.1",
+    "appium": "^1.16.0",
     "jasmine": "^3.5.0",
-    "js-base64": "^2.5.1",
-    "log4js": "^5.3.0",
-    "selenium-webdriver": "^4.0.0-alpha.5"
+    "log4js": "^6.1.0",
+    "webdriver": "^5.18.0"
+  },
+  "devDependencies": {
+    "@wdio/jasmine-framework": "^5.16.15",
+    "@wdio/local-runner": "^5.18.0",
+    "@wdio/spec-reporter": "^5.16.11",
+    "@wdio/sync": "^5.17.0",
+    "chromedriver": "^79.0.0",
+    "wdio-chromedriver-service": "^5.0.2"
   }
 }
