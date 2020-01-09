@@ -1,6 +1,10 @@
 const Page = require('./Page');
 const { By, until } = require('selenium-webdriver');
 let driver;
+const newReleasesIdSelector = `tab_select_NewReleases`;
+const discountsSelector = '//div[@id="tab_content_NewReleases"]//div[@class=\'discount_pct\']';
+const disountFinalPriceSelector =  new String(`(//div[@id="tab_content_NewReleases"]//div[@class='discount_pct']/..//div[@class='discount_final_price'])[{0}]`);
+const finalPriceSelector = '//div[@id="tab_content_NewReleases"]//div[@class=\'discount_final_price\']';
 let index = 1;
 
 class ListGamesPage extends Page {
@@ -13,9 +17,9 @@ class ListGamesPage extends Page {
         return driver;
     }
 
-    goNewReleases(){
-        driver.wait (
-            until.elementLocated(By.id(`tab_select_NewReleases`)),
+    goNewReleases() {
+        driver.wait(
+            until.elementLocated(By.id(newReleasesIdSelector)),
             10000
         ).click();
     }
@@ -23,21 +27,22 @@ class ListGamesPage extends Page {
     async findMaxDiscount() {
         let min = 0;
         let minDiscount;
-        let discounts = await driver.wait (
-            until.elementsLocated(By.xpath('//div[@id="tab_content_NewReleases"]//div[@class=\'discount_pct\']')),
+        let discounts = await driver.wait(
+            until.elementsLocated(By.xpath(discountsSelector)),
             10000
         );
-        if(discounts === null){
+
+        if(discounts === null) {
             return null
         }
-        let i=0;
-        for(let discount of await discounts)
-        {
+
+        let i = 0;
+        for(let discount of await discounts) {
             i++;
             let text = await discount.getText();
-            text = await text.slice(0,3);
-            if(min > +text){
-                index=i;
+            text = await text.slice(0, 3);
+            if(min > +text) {
+                index = i;
                 min = +text;
                 minDiscount = discount;
             }
@@ -45,21 +50,20 @@ class ListGamesPage extends Page {
         return minDiscount;
     }
 
-    getPrice(){
+    getPrice() {
         return driver.findElement(By.xpath(
-            `(//div[@id="tab_content_NewReleases"]//div[@class='discount_pct']/..//div[@class='discount_final_price'])[${index}]`))
-            .getText();
+           disountFinalPriceSelector.format(index)
+        )).getText();
     }
 
-    async findMaxPrice(){
+    async findMaxPrice() {
         let max = 0;
         let maxPrice;
-        let prices = await driver.findElements(By.xpath('//div[@id="tab_content_NewReleases"]//div[@class=\'discount_final_price\']'));
+        let prices = await driver.findElements(By.xpath(finalPriceSelector));
         let text = await prices[0].getText();
         max = text.slice(1);
         maxPrice = prices[0];
-        for(let price of prices)
-        {
+        for(let price of prices) {
             let text = await price.getText();
             text = text.slice(1);
             if(max < +text) {
@@ -70,4 +74,5 @@ class ListGamesPage extends Page {
         return maxPrice
     }
 }
+
 module.exports = new ListGamesPage();

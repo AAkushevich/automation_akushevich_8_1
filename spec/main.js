@@ -1,15 +1,17 @@
 require('jasmine');
 require('chromedriver');
+
 const { Builder } = require('selenium-webdriver');
 const webdriver = require('selenium-webdriver');
+const config = require('./test/testData');
 const mainSteamPage = require('./test/SteamMenuPage');
+const headerSteamPage = require('./test/SteamHeaderPage');
 const gamePage = require('./test/GamePage');
 const GamesPage = require('./test/ListGamesPage');
 const downloadPage = require('./test/DownloadSteamPage');
-const config = require('./test/testData');
+
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = config.DEFAULT_TIMEOUT;
-
 let chromeCapabilities = webdriver.Capabilities.chrome();
 let chromeOptions = {
     'prefs': {"download.default_directory":config.downloadPath}
@@ -26,10 +28,6 @@ describe("Steam test", function() {
     beforeAll(async function () {
         await mainSteamPage.setDriver(driver);
         await mainSteamPage.open(config.SteamURL);
-    });
-
-    afterAll(async function() {
-        await driver.quit();
     });
 
     it('Genre exists', async () => {
@@ -59,7 +57,7 @@ describe("Steam test", function() {
         await gamePage.EnterAgeGate(config.birthYear);
         gamePage.setDriver(driver);
 
-        if(maxDiscount === null){
+        if(maxDiscount === null) {
             price = await gamePage.getPrice();
             expect(price).toContain(textPrice);
         }
@@ -72,11 +70,15 @@ describe("Steam test", function() {
     });
 
     it("Download Steam",async () => {
-        mainSteamPage.setDriver(driver);
-        await mainSteamPage.goSteamInstall();
-        driver = await mainSteamPage.getDriver();
+        headerSteamPage.setDriver(driver);
+        await headerSteamPage.goSteamInstall();
+        driver = await headerSteamPage.getDriver();
         await downloadPage.setDriver(driver);
         await downloadPage.downloadSteam();
         await downloadPage.waitDownload();
+    });
+
+    afterAll(async function() {
+        await driver.quit();
     });
 });
