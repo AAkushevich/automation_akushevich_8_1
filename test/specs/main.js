@@ -21,5 +21,4 @@ describe('Sign in test', function () {
     expect(err).toContain(defaultValues.errors);
     logger.info('Test is over');
   });
-
 });
