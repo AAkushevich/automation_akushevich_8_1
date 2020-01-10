@@ -1,7 +1,6 @@
 const defaultValues = require('./testData/constantValues');
 const logger = require('./testData/logger').logger;
 const Page = require('./testData/page');
-const assert = require('assert').strict;
 
 describe('Sign in test', function () {
   it('Sign in', async () => {

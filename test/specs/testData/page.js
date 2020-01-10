@@ -1,5 +1,14 @@
-const defaultValues = require('./constantValues');
-const logger =  require('./logger').logger;
+const logger = require('./logger').logger;
+
+const credSelector = new String(`android=new UiSelector().resourceId("{0}")`);
+
+String.prototype.format = function() {
+    stringObject = this; 
+    for (argIndex in arguments) { 
+        stringObject = stringObject.replace(`{${argIndex}}`, arguments[argIndex]) 
+    } 
+    return stringObject
+}
 
 class Page {
 
@@ -11,7 +20,6 @@ class Page {
         logger.trace(`Click: ${selector} ${count} times`);
         for (let i = 0; i < count; i++)
             await element.click();
-
     }
 
     async back() {
@@ -21,7 +29,7 @@ class Page {
 
     async setCreeds(selector, length) {
         logger.trace(`Random creeds ${selector}`);
-        let creed = await $(`android=new UiSelector().resourceId("${selector}")`);
+        let creed = await $(credSelector.format(selector));
         await creed.setValue(this.getRandomStrByLength(length));
     }
 
@@ -37,7 +45,6 @@ class Page {
             string += Math.random().toString(36).substring(2);
         return string.substring(0, length);
     }
-
 }
 
 module.exports = new Page();
